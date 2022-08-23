@@ -4,7 +4,13 @@ require 'pstore'
 
 get '/:url' do
 #   "Your entered URL is #{params[:url]}"
-  redirect "https://" + ShortURL.read(params[:url])
+  original = ShortURL.read(params[:url])
+
+  if original
+    redirect "https://" + original
+  else
+    "Sorry, origin not found"
+  end
 end
 
 get '/' do
@@ -17,8 +23,7 @@ post '/' do
 end
 
 def generate_short_url(original)
-  ShortURL.save('localhost:4567/' + Base64.encode64(original)[0..6], original)
-  
+  original = ShortURL.save('localhost:4567/' + Base64.encode64(original)[0..6], original)
   'localhost:4567/' + Base64.encode64(original)[0..6]
 end
 
